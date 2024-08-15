@@ -1,0 +1,74 @@
+openapi: '3.0.3'
+info:
+  title: SPDPTC
+  version: '1.0'
+  license:
+    name: BSD 2-Clause Simplified License
+    url: https://github.com/SPDPTC/SPDPTC/blob/main/LICENSE
+servers:
+  - url: http://localhost
+externalDocs:
+  description: Github Repository
+  url: https://github.com/SPDPTC/SPDPTC
+tags:
+  - name: auth
+    description: Authentication operation
+paths:
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: Login to get Access Token
+      description: Login to get Access Token
+      requestBody: 
+        content:
+          application/json: 
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              example: 
+                access_token: aSKLDhgeasdfr...
+                token_type: 'bearer'
+                expires_in: 3600
+        '401':
+          description: "Wrong credentials"
+          content:
+            application/json:
+              example:
+                message: "These credentials do not match our records."
+        '422':
+          description: "Validation error"
+          content:
+            application/json:
+              example:
+                message: "The email field is required. (and 1 more error)"
+                errors:
+                  email: 
+                    - "The email field is required."
+                  password:
+                    - "The password field is requred."
+components:
+  schemas:
+      LoginRequest:
+        type: object
+        properties:
+          email:
+            type: string
+            format: email
+            maxLength: 255
+            description: "User's email address"
+          password:
+            type: string
+            minLength: 6
+            maxLength: 255
+            description: "User's password"
+        required:
+          - email
+          - password
+        example:
+          email: "user@example.com"
+          password: "password123"
